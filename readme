@@ -1,0 +1,19 @@
+#https://openwrt.org/docs/guide-developer/build-system/install-buildsystem
+#https://openwrt.org/docs/guide-developer/build-system/use-buildsystem
+git clone https://git.openwrt.org/openwrt/openwrt.git
+cd openwrt
+git checkout `git rev-list -1 --before="Mar 31 2020" master`
+#edit generic-tp-link.mk in both locations to add kmod-ath10k as per pull
+vi ~/openwrt/target/linux/ar71xx/image/generic-tp-link.mk
+vi ~/openwrt/target/linux/ath79/image/generic-tp-link.mk
+./scripts/feeds update -a
+./scripts/feeds install -a
+make menuconfig
+make defconfig
+make menuconfig
+make download
+cd ~
+cp 982-ath10k-qca9880-ar1a-archer-c7-wdr7500.patch 980-revertcrap.mod.patch ~/openwrt/package/kernel/mac80211/patches/ath/.
+cp files openwrt/.
+cd openwrt
+make -j5 V=s
